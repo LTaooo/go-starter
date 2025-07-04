@@ -10,23 +10,24 @@ import (
 
 func setupRouter() *gin.Engine {
 	engine := gin.Default()
-
 	route.Init(engine)
-
 	return engine
 }
 func initLogger() {
-	err := logger.Init(logger.NewConfig())
-	if err != nil {
+	// 1. 初始化日志系统
+	if err := logger.InitLogger(); err != nil {
 		panic(err)
 	}
-	defer logger.Sync()
-	logger.Get().Debug("这是一条调试级别的日志")
+
+	// 2. 使用 Zap logger
+	logger.SugaredLogger.Info("这是一条信息级别的日志")
+	logger.SugaredLogger.Error("这是一条错误级别的日志")
 }
 
 func main() {
 	initLogger()
 	r := setupRouter()
+	gin.SetMode(gin.DebugMode)
 	config.LoadConfig()
 	r.Run(":8080")
 }
