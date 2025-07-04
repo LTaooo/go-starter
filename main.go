@@ -28,11 +28,32 @@ func initLogger() {
 	}
 }
 
+func setGinMode() {
+	// 1. 根据配置中的环境设置 Gin 模式
+	switch config.GetConfig().AppEnv {
+	case "prod":
+		gin.SetMode(gin.ReleaseMode)
+	case "test":
+		gin.SetMode(gin.TestMode)
+	default:
+		gin.SetMode(gin.DebugMode)
+	}
+}
+
 func main() {
+	// 1. 初始化日志系统
 	initLogger()
-	r := setupRouter()
-	gin.SetMode(gin.DebugMode)
+
+	// 2. 加载配置
 	config.LoadConfig()
-	logger.SugaredLogger.Info("项目启动成功")
-	r.Run(":8080")
+
+	// 3. 根据配置设置 Gin 运行模式
+	setGinMode()
+
+	// 4. 设置路由
+	r := setupRouter()
+
+	// 5. 启动服务器
+	logger.SugaredLogger.Info("项目启动成功:", config.GetConfig().GetListenAddr(), "+", config.GetConfig().AppEnv)
+	r.Run(config.GetConfig().GetListenAddr())
 }

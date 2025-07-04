@@ -1,73 +1,43 @@
 package config
 
 import (
-	"fmt"
-	"log"
+	"go-starter/core/logger"
 	"strings"
 
 	"github.com/joho/godotenv"
-	"github.com/nacos-group/nacos-sdk-go/v2/clients"
-	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
-	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
 )
 
-var GlobalConfig *AppConfig
+var configData *AppConfig
+
+func GetConfig() *AppConfig {
+	return configData
+}
 
 func LoadConfig() {
-	// 1. 加载 .env 文件（或系统环境变量）
-	_ = godotenv.Load(".env")
+	// 1. 加载 .env 文件
+	if err := godotenv.Load(".env"); err != nil {
+		logger.SugaredLogger.Error("读取 .env 文件失败", "error", err)
+	}
+
+	// 2. 配置 Viper
+	viper.SetConfigName(".env") // 配置文件名 (不带扩展名)
+	viper.SetConfigType("env")  // 配置文件类型
+	viper.AddConfigPath(".")    // 搜索路径
+
+	// 3. 设置环境变量自动绑定和替换
 	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	// 3. 创建 nacos 客户端
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(viper.GetString("NACOS_IP"), uint64(viper.GetInt("NACOS_PORT"))),
-	}
-	cc := *constant.NewClientConfig(
-		constant.WithNamespaceId(viper.GetString("NACOS_NAMESPACE")),
-		constant.WithUsername(viper.GetString("NACOS_USERNAME")),
-		constant.WithPassword(viper.GetString("NACOS_PASSWORD")),
-		constant.WithTimeoutMs(5000),
-		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir("logs"),
-		constant.WithCacheDir("runtime"),
-		constant.WithLogLevel("debug"),
-	)
-
-	nacosClient, err := clients.NewConfigClient(
-		vo.NacosClientParam{
-			ServerConfigs: sc,
-			ClientConfig:  &cc,
-		},
-	)
-	if err != nil {
-		log.Fatalf("Create nacos client failed: %v", err)
+	// 5. 读取配置文件
+	if err := viper.ReadInConfig(); err != nil {
+		logger.SugaredLogger.Error("读取配置文件失败", "error", err)
 	}
 
-	// 4. 读取远程配置（yaml）
-	content, err := nacosClient.GetConfig(vo.ConfigParam{
-		DataId: viper.GetString("NACOS_DATA_ID"),
-		Group:  viper.GetString("NACOS_GROUP"),
-	})
-	if err != nil {
-		log.Fatalf("Get config from nacos failed: %v", err)
-	}
-
-	// 5. 加载到 viper
-	viper.SetConfigType("yaml")
-	if err := viper.ReadConfig(strings.NewReader(content)); err != nil {
-		log.Fatalf("Read nacos config failed: %v", err)
-	}
-
-	// 6. 设置默认值（可选）
-	viper.SetDefault("server.port", 3000)
-
-	// 7. 解析成结构体
-	var cfg AppConfig
+	// 6. 解析成结构体
+	cfg := NewAppConfig()
 	if err := viper.Unmarshal(&cfg); err != nil {
-		log.Fatalf("Unmarshal config failed: %v", err)
+		logger.SugaredLogger.Error("解析配置失败", "error", err)
 	}
-	GlobalConfig = &cfg
-
-	fmt.Printf("✅ Config loaded: %+v\n", cfg)
+	configData = cfg
 }

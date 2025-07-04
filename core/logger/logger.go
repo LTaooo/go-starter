@@ -25,7 +25,10 @@ func InitLogger() error {
 	level := zap.NewAtomicLevelAt(zap.InfoLevel)
 
 	// 3. 配置控制台输出（文本格式）
-	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
+	consoleEncoderConfig.TimeKey = "time"
+	consoleEncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
+	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
 	consoleCore := zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), level)
 
 	// 4. 配置文件输出（JSON 格式）
@@ -36,7 +39,10 @@ func InitLogger() error {
 		MaxAge:     30, // 保留天数
 		Compress:   true,
 	}
-	fileEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+	fileEncoderConfig := zap.NewProductionEncoderConfig()
+	fileEncoderConfig.TimeKey = "time"
+	fileEncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
+	fileEncoder := zapcore.NewJSONEncoder(fileEncoderConfig)
 	fileCore := zapcore.NewCore(fileEncoder, zapcore.AddSync(fileWriter), level)
 
 	// 5. 创建多输出 core
