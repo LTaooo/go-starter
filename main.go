@@ -9,8 +9,16 @@ import (
 )
 
 func setupRouter() *gin.Engine {
-	engine := gin.Default()
+	// 1. 创建 gin 引擎，不使用默认中间件
+	engine := gin.New()
+
+	// 2. 使用我们的自定义日志中间件
+	engine.Use(logger.GinLogger())
+	engine.Use(logger.GinRecovery())
+
+	// 3. 初始化路由
 	route.Init(engine)
+
 	return engine
 }
 func initLogger() {
@@ -18,10 +26,6 @@ func initLogger() {
 	if err := logger.InitLogger(); err != nil {
 		panic(err)
 	}
-
-	// 2. 使用 Zap logger
-	logger.SugaredLogger.Info("这是一条信息级别的日志")
-	logger.SugaredLogger.Error("这是一条错误级别的日志")
 }
 
 func main() {
@@ -29,5 +33,6 @@ func main() {
 	r := setupRouter()
 	gin.SetMode(gin.DebugMode)
 	config.LoadConfig()
+	logger.SugaredLogger.Info("项目启动成功")
 	r.Run(":8080")
 }
