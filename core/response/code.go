@@ -20,18 +20,18 @@ const (
 func (c Code) Message() string {
 	switch c {
 	case OK:
-		return "操作成功"
+		return "success"
 	case BadRequest:
-		return "请求参数错误"
+		return "bad request"
 	case Unauthorized:
-		return "未授权"
+		return "unauthorized"
 	case Forbidden:
-		return "无权限"
+		return "forbidden"
 	case NotFound:
-		return "资源未找到"
+		return "not found"
 	case InternalError:
-		return "服务器内部错误"
+		return "internal error"
 	default:
-		return "未知错误"
+		return "unknown error"
 	}
 }

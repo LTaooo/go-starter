@@ -12,7 +12,7 @@ func setupRouter() *gin.Engine {
 	// 1. 创建 gin 引擎，不使用默认中间件
 	engine := gin.New()
 
-	// 2. 使用我们的自定义日志中间件
+	// 2. 使用自定义日志中间件
 	engine.Use(logger.GinLogger())
 	engine.Use(logger.GinRecovery())
 
@@ -54,6 +54,7 @@ func main() {
 	r := setupRouter()
 
 	// 5. 启动服务器
+	println(config.GetConfig().AppName)
 	logger.SugaredLogger.Info("项目启动成功:", config.GetConfig().GetListenAddr(), "+", config.GetConfig().AppEnv)
 	r.Run(config.GetConfig().GetListenAddr())
 }
