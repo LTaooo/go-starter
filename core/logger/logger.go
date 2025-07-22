@@ -34,7 +34,7 @@ func InitLogger() error {
 	// 4. 配置文件输出（JSON 格式）
 	fileWriter := &lumberjack.Logger{
 		Filename:   "./logs/app.log",
-		MaxSize:    10, // 单个文件最大 MB
+		MaxSize:    20, // 单个文件最大 MB
 		MaxBackups: 5,  // 保留旧日志数量
 		MaxAge:     30, // 保留天数
 		Compress:   true,
