@@ -73,15 +73,11 @@ func gracefulShutdown(server *http.Server) {
 	// 3. 关闭数据库连接
 	if err := database.CloseDatabase(); err != nil {
 		logger.SugaredLogger.Error("关闭数据库连接失败", "error", err)
-	} else {
-		logger.SugaredLogger.Info("数据库连接已关闭")
 	}
 
 	// 4. 关闭服务器
 	if err := server.Shutdown(ctx); err != nil {
 		logger.SugaredLogger.Error("服务器关闭失败", "error", err)
-	} else {
-		logger.SugaredLogger.Info("服务器已关闭")
 	}
 }
 
@@ -108,7 +104,6 @@ func main() {
 	}
 
 	// 7. 启动服务器
-	println(config.GetConfig().AppName)
 	logger.SugaredLogger.Info("项目启动成功:", config.GetConfig().GetListenAddr(), "+", config.GetConfig().AppEnv)
 
 	// 8. 启动服务器并处理优雅关闭

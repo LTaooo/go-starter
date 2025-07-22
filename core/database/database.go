@@ -65,7 +65,6 @@ func InitDatabase() error {
 		return fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	logger.SugaredLogger.Info("数据库连接成功")
 	return nil
 }
 
