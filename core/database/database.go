@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"go-starter/app/config"
-	"go-starter/core/logger"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

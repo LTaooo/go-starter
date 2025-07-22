@@ -1,6 +1,9 @@
 package logger
 
 import (
+	"go-starter/core/enum"
+	"go-starter/core/response"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,13 +27,13 @@ func GinRecovery() gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		// 1. 记录 panic 信息
 		SugaredLogger.Error("HTTP 请求发生 panic",
-			"method", c.Request.Method,
-			"path", c.Request.URL.Path,
-			"client_ip", c.ClientIP(),
-			"panic", recovered,
+			"Method: ", c.Request.Method,
+			" Path: ", c.Request.URL.Path,
+			" ClientIP: ", c.ClientIP(),
+			" Panic: ", recovered,
 		)
 
 		// 2. 返回 500 错误
-		c.AbortWithStatus(500)
+		response.NewResponse().Error(c, enum.InternalError, "系统异常")
 	})
 }
