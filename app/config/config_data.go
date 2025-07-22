@@ -1,20 +1,26 @@
 package config
 
 type MysqlConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
-	Database string `mapstructure:"database"`
+	Enable      bool   `mapstructure:"enable"`
+	Host        string `mapstructure:"host"`
+	Port        int    `mapstructure:"port"`
+	Username    string `mapstructure:"username"`
+	Password    string `mapstructure:"password"`
+	Database    string `mapstructure:"database"`
+	PoolSize    int    `mapstructure:"pool_size"`
+	MaxPoolSize int    `mapstructure:"max_pool_size"`
 }
 
 func newMysqlConfig() *MysqlConfig {
 	return &MysqlConfig{
-		Host:     "localhost",
-		Port:     3306,
-		Username: "root",
-		Password: "root",
-		Database: "go_starter",
+		Enable:      false,
+		Host:        "localhost",
+		Port:        3306,
+		Username:    "root",
+		Password:    "root",
+		Database:    "go_starter",
+		PoolSize:    10,
+		MaxPoolSize: 100,
 	}
 }
 

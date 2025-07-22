@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"go-starter/app/config"
 	"go-starter/core/logger"
 
 	"gorm.io/driver/mysql"
@@ -11,18 +12,22 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-// DB 全局数据库实例
-var DB *gorm.DB
+// MySQL 全局数据库实例
+var MySQL *gorm.DB
 
 // InitDatabase 初始化数据库连接
 func InitDatabase() error {
+	mysqlConfig := config.GetConfig().Mysql
+	if !mysqlConfig.Enable {
+		return nil
+	}
 	// 1. 构建数据库连接字符串
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		"root",       // 用户名
-		"password",   // 密码
-		"localhost",  // 主机
-		3306,         // 端口
-		"go_starter", // 数据库名
+		mysqlConfig.Username,
+		mysqlConfig.Password,
+		mysqlConfig.Host,
+		mysqlConfig.Port,
+		mysqlConfig.Database,
 	)
 
 	// 2. 配置 GORM
@@ -39,21 +44,21 @@ func InitDatabase() error {
 
 	// 3. 连接数据库
 	var err error
-	DB, err = gorm.Open(mysql.Open(dsn), config)
+	MySQL, err = gorm.Open(mysql.Open(dsn), config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
 	// 4. 配置连接池
-	sqlDB, err := DB.DB()
+	sqlDB, err := MySQL.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get underlying sql.DB: %w", err)
 	}
 
 	// 设置连接池参数
-	sqlDB.SetMaxIdleConns(10)           // 最大空闲连接数
-	sqlDB.SetMaxOpenConns(100)          // 最大打开连接数
-	sqlDB.SetConnMaxLifetime(time.Hour) // 连接最大生存时间
+	sqlDB.SetMaxIdleConns(mysqlConfig.PoolSize)    // 最大空闲连接数
+	sqlDB.SetMaxOpenConns(mysqlConfig.MaxPoolSize) // 最大打开连接数
+	sqlDB.SetConnMaxLifetime(time.Hour)            // 连接最大生存时间
 
 	// 5. 测试连接
 	if err := sqlDB.Ping(); err != nil {
@@ -66,8 +71,8 @@ func InitDatabase() error {
 
 // CloseDatabase 关闭数据库连接
 func CloseDatabase() error {
-	if DB != nil {
-		sqlDB, err := DB.DB()
+	if MySQL != nil {
+		sqlDB, err := MySQL.DB()
 		if err != nil {
 			return err
 		}
