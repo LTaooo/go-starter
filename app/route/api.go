@@ -3,6 +3,7 @@ package route
 import (
 	"go-starter/app/config"
 	controller "go-starter/app/conroller"
+	"go-starter/core/enum"
 	"go-starter/core/response"
 
 	"github.com/gin-gonic/gin"
@@ -25,10 +26,10 @@ func initDefaultRoutes(engine *gin.Engine) {
 	})
 
 	engine.NoRoute(func(c *gin.Context) {
-		response.NewResponse().Error(c, response.NotFound, "Not Found")
+		response.NewResponse().Error(c, enum.NotFound, "Not Found")
 	})
 
 	engine.NoMethod(func(c *gin.Context) {
-		response.NewResponse().Error(c, response.BadRequest, "Method Not Allowed")
+		response.NewResponse().Error(c, enum.BadRequest, "Method Not Allowed")
 	})
 }

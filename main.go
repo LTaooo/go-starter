@@ -3,6 +3,7 @@ package main
 import (
 	"go-starter/app/config"
 	"go-starter/app/route"
+	"go-starter/core/enum"
 	"go-starter/core/logger"
 
 	"github.com/gin-gonic/gin"
@@ -31,9 +32,9 @@ func initLogger() {
 func setGinMode() {
 	// 1. 根据配置中的环境设置 Gin 模式
 	switch config.GetConfig().AppEnv {
-	case "prod":
+	case enum.PROD.String():
 		gin.SetMode(gin.ReleaseMode)
-	case "test":
+	case enum.TEST.String():
 		gin.SetMode(gin.TestMode)
 	default:
 		gin.SetMode(gin.DebugMode)

@@ -1,9 +1,13 @@
 package response
 
-import "github.com/gin-gonic/gin"
+import (
+	"go-starter/core/enum"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Response struct {
-	Code    Code        `json:"code"`
+	Code    enum.Code   `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
@@ -14,14 +18,14 @@ func NewResponse() Response {
 
 func (rs Response) Success(ctx *gin.Context, data interface{}) {
 	rs = Response{
-		Code:    OK,
-		Message: OK.Message(),
+		Code:    enum.OK,
+		Message: enum.OK.Message(),
 		Data:    data,
 	}
 	ctx.JSON(200, rs)
 }
 
-func (rs Response) Error(ctx *gin.Context, code Code, message string) {
+func (rs Response) Error(ctx *gin.Context, code enum.Code, message string) {
 	rs = Response{
 		Code:    code,
 		Message: message,
