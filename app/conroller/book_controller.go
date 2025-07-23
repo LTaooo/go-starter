@@ -20,6 +20,14 @@ func NewBookController() *BookController {
 	}
 }
 
+// @Summary 获取书籍
+// @Description 根据ID获取书籍信息
+// @Tags book
+// @Accept json
+// @Produce json
+// @Param id query int true "书籍ID" minimum(1)
+// @Success 200 {object} response.Response{data=dto.BookGetRes}
+// @Router /api/book [get]
 func (b *BookController) GetBook(c *gin.Context) {
 	var req dto.BookGetReq
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -43,6 +51,14 @@ func (b *BookController) GetBook(c *gin.Context) {
 	})
 }
 
+// @Summary 创建书籍
+// @Description 创建新的书籍
+// @Tags book
+// @Accept json
+// @Produce json
+// @Param book body dto.BookCreateReq true "书籍信息"
+// @Success 200 {object} response.Response{data=dto.BookCreateRes}
+// @Router /api/book/create [post]
 func (b *BookController) CreateBook(c *gin.Context) {
 	var req dto.BookCreateReq
 	if err := c.ShouldBindJSON(&req); err != nil {

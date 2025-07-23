@@ -15,6 +15,8 @@ import (
 	"go-starter/core/logger"
 	"go-starter/core/middleware"
 
+	"go-starter/docs"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -83,38 +85,32 @@ func gracefulShutdown(server *http.Server) {
 	}
 }
 
+func initSwagger() {
+	conf := config.GetConfig()
+	docs.SwaggerInfo.Title = conf.AppName
+	docs.SwaggerInfo.Description = ""
+	docs.SwaggerInfo.Version = "1.0.0"
+	docs.SwaggerInfo.BasePath = ""
+	docs.SwaggerInfo.Host = conf.GetListenAddr()
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+}
+
 func main() {
-	// 1. 初始化日志系统
 	initLogger()
-
-	// 2. 加载配置
 	config.LoadConfig()
-
-	// 3. 根据配置设置 Gin 运行模式
+	initSwagger()
 	setGinMode()
-
-	// 4. 初始化数据库连接
 	initDatabase()
-
-	// 5. 设置路由
 	r := setupRouter()
-
-	// 6. 创建 HTTP 服务器
 	server := &http.Server{
 		Addr:    config.GetConfig().GetListenAddr(),
 		Handler: r,
 	}
-
-	// 7. 启动服务器
 	logger.SugaredLogger.Info("项目启动成功:", config.GetConfig().GetListenAddr(), "+", config.GetConfig().AppEnv)
-
-	// 8. 启动服务器并处理优雅关闭
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.SugaredLogger.Error("服务器启动失败", "error", err)
 		}
 	}()
-
-	// 9. 等待关闭信号
 	gracefulShutdown(server)
 }

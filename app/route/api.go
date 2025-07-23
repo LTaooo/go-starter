@@ -7,6 +7,8 @@ import (
 	"go-starter/core/response"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 /**
@@ -14,6 +16,8 @@ import (
  */
 func Init(engine *gin.Engine) {
 	initDefaultRoutes(engine)
+	// 添加swagger路由
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api := engine.Group("/api")
 
 	// 书籍路由
