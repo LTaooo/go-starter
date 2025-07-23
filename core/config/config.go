@@ -24,19 +24,14 @@ func LoadConfig() {
 	// 3. 读取配置文件
 	if err := viper.ReadInConfig(); err != nil {
 		logger.SugaredLogger.Error("读取配置文件失败", "error", err)
-		// 如果配置文件不存在，使用默认配置
-		logger.SugaredLogger.Info("使用默认配置")
-		configData = NewAppConfig()
-		return
+		panic(err)
 	}
 
 	// 4. 解析成结构体
 	cfg := NewAppConfig()
 	if err := viper.Unmarshal(&cfg); err != nil {
 		logger.SugaredLogger.Error("解析配置失败", "error", err)
-		// 解析失败时使用默认配置
-		configData = NewAppConfig()
-		return
+		panic(err)
 	}
 
 	configData = cfg
