@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"strconv"
-
+	dto "go-starter/app/dto/book"
 	"go-starter/app/service"
 	"go-starter/core/enum"
 	"go-starter/core/response"
+	"go-starter/core/utils/datetime"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,31 +21,28 @@ func NewBookController() *BookController {
 }
 
 func (b *BookController) Register(engine *gin.Engine) {
-	engine.GET("/book/:id", b.GetBook)
+	engine.GET("/book", b.GetBook)
 }
 
 func (b *BookController) GetBook(c *gin.Context) {
-	// 1. 获取路径参数中的ID
-	idStr := c.Param("id")
-	if idStr == "" {
-		response.NewResponse().Error(c, enum.BadRequest, "书籍ID不能为空")
+	var req dto.BookGetReq
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.NewResponse().Error(c, enum.BadRequest, err.Error())
 		return
 	}
 
-	// 2. 转换ID为uint类型
-	id, err := strconv.ParseUint(idStr, 10, 32)
+	book, err := b.bookService.GetBookByID(req.Id)
+
 	if err != nil {
-		response.NewResponse().Error(c, enum.BadRequest, "书籍ID格式错误")
+		response.NewResponse().Success(c, nil)
 		return
 	}
 
-	// 3. 调用服务层查询书籍
-	book, err := b.bookService.GetBookByID(uint(id))
-	if err != nil {
-		response.NewResponse().Error(c, enum.NotFound, err.Error())
-		return
-	}
-
-	// 4. 返回成功响应
-	response.NewResponse().Success(c, book)
+	response.NewResponse().Success(c, dto.BookGetRes{
+		Id:       book.ID,
+		Name:     book.Name,
+		Author:   book.Author,
+		Price:    book.Price,
+		CreateAt: datetime.FromTimestamp(book.CreatedAt).Datetime(),
+	})
 }

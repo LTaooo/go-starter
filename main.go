@@ -13,6 +13,7 @@ import (
 	"go-starter/core/database"
 	"go-starter/core/enum"
 	"go-starter/core/logger"
+	"go-starter/core/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,8 +23,9 @@ func setupRouter() *gin.Engine {
 	engine := gin.New()
 
 	// 2. 使用自定义日志中间件
-	engine.Use(logger.GinLogger())
-	engine.Use(logger.GinRecovery())
+	engine.Use(middleware.GinLogger())
+	engine.Use(middleware.GinRecovery())
+	engine.Use(middleware.ErrorHandler())
 
 	// 3. 初始化路由
 	route.Init(engine)

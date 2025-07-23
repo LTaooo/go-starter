@@ -10,7 +10,7 @@ const (
 	BadRequest   Code = 400
 	Unauthorized Code = 401
 	Forbidden    Code = 403
-	NotFound     Code = 404
+	HttpNotFound Code = 404
 
 	// 4. 服务端错误
 	InternalError Code = 500
@@ -27,7 +27,7 @@ func (c Code) Message() string {
 		return "unauthorized"
 	case Forbidden:
 		return "forbidden"
-	case NotFound:
+	case HttpNotFound:
 		return "not found"
 	case InternalError:
 		return "internal error"

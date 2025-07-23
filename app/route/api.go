@@ -26,7 +26,7 @@ func initDefaultRoutes(engine *gin.Engine) {
 	})
 
 	engine.NoRoute(func(c *gin.Context) {
-		response.NewResponse().Error(c, enum.NotFound, "Not Found")
+		response.NewResponse().Error(c, enum.HttpNotFound, "Not Found")
 	})
 
 	engine.NoMethod(func(c *gin.Context) {
