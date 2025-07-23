@@ -2,7 +2,7 @@ package repository
 
 import (
 	"go-starter/app/model"
-	"go-starter/core/database"
+	database "go-starter/core/mysql"
 )
 
 type BookRepository struct {

@@ -10,10 +10,10 @@ import (
 
 	"go-starter/app/route"
 	"go-starter/core/config"
-	"go-starter/core/database"
 	"go-starter/core/enum"
 	"go-starter/core/logger"
 	"go-starter/core/middleware"
+	database "go-starter/core/mysql"
 
 	"go-starter/docs"
 
