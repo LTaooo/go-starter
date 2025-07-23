@@ -1,13 +1,11 @@
 package dto
 
 type BookGetReq struct {
-	Id uint `form:"id" binding:"required"`
+	Id uint `form:"id" binding:"required,min=1"`
 }
 
-type BookGetRes struct {
-	Id       uint    `json:"id"`
-	Name     string  `json:"name"`
-	Author   string  `json:"author"`
-	Price    float64 `json:"price"`
-	CreateAt string  `json:"create_at"`
+type BookCreateReq struct {
+	Name   string  `json:"name" binding:"required,min=1,max=255"`
+	Author string  `json:"author" binding:"required,min=1,max=255"`
+	Price  float64 `json:"price" binding:"required,min=0.01"`
 }

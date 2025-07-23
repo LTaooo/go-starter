@@ -20,10 +20,6 @@ func NewBookController() *BookController {
 	}
 }
 
-func (b *BookController) Register(engine *gin.Engine) {
-	engine.GET("/book", b.GetBook)
-}
-
 func (b *BookController) GetBook(c *gin.Context) {
 	var req dto.BookGetReq
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -44,5 +40,23 @@ func (b *BookController) GetBook(c *gin.Context) {
 		Author:   book.Author,
 		Price:    book.Price,
 		CreateAt: datetime.FromTimestamp(book.CreatedAt).Datetime(),
+	})
+}
+
+func (b *BookController) CreateBook(c *gin.Context) {
+	var req dto.BookCreateReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.NewResponse().Error(c, enum.BadRequest, err.Error())
+		return
+	}
+
+	book, err := b.bookService.CreateBook(req)
+	if err != nil {
+		response.NewResponse().Error(c, enum.InternalError, err.Error())
+		return
+	}
+
+	response.NewResponse().Success(c, dto.BookCreateRes{
+		Id: book.ID,
 	})
 }

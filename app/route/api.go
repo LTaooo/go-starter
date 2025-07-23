@@ -14,7 +14,12 @@ import (
  */
 func Init(engine *gin.Engine) {
 	initDefaultRoutes(engine)
-	controller.NewBookController().Register(engine)
+	api := engine.Group("/api")
+
+	// 书籍路由
+	bookController := controller.NewBookController()
+	api.GET("/book", bookController.GetBook)
+	api.POST("/book/create", bookController.CreateBook)
 }
 
 /**
