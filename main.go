@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"go-starter/app/config"
 	"go-starter/app/route"
+	"go-starter/core/config"
 	"go-starter/core/database"
 	"go-starter/core/enum"
 	"go-starter/core/logger"

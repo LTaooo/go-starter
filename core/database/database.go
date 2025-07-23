@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"go-starter/app/config"
+	"go-starter/core/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

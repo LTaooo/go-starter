@@ -1,8 +1,8 @@
 package route
 
 import (
-	"go-starter/app/config"
 	controller "go-starter/app/conroller"
+	"go-starter/core/config"
 	"go-starter/core/enum"
 	"go-starter/core/response"
 
