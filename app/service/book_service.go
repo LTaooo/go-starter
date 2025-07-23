@@ -36,6 +36,9 @@ func (s *BookService) CreateBook(req dto.BookCreateReq) (*model.Book, error) {
 	book.Price = req.Price
 	book.CreatedAt = datetime.FromNow().Timestamp()
 	book.UpdatedAt = datetime.FromNow().Timestamp()
-	s.db.Create(&book)
+	result := s.db.Create(&book)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 	return &book, nil
 }
