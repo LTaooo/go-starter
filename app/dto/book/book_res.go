@@ -1,13 +1,19 @@
 package dto
 
 type BookGetRes struct {
-	Id       uint    `json:"id"`
-	Name     string  `json:"name"`
-	Author   string  `json:"author"`
-	Price    float64 `json:"price"`
-	CreateAt string  `json:"create_at"`
+	// 书籍ID
+	Id uint `json:"id"`
+	// 书籍名称
+	Name string `json:"name"`
+	// 作者
+	Author string `json:"author"`
+	// 价格
+	Price float64 `json:"price"`
+	// 创建时间
+	CreateAt string `json:"create_at"`
 }
 
 type BookCreateRes struct {
+	// 书籍id
 	Id uint `json:"id"`
 }

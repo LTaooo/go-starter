@@ -19,7 +19,7 @@ func NewBookService() *BookService {
 
 // GetBookByID 通过ID查询书籍
 func (s *BookService) GetBookByID(id uint) (*model.Book, error) {
-	return s.bookRepository.Get(id)
+	return s.bookRepository.Find(id)
 }
 
 func (s *BookService) CreateBook(req dto.BookCreateReq) (*model.Book, error) {

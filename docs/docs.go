@@ -142,6 +142,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "书籍id",
                     "type": "integer"
                 }
             }
@@ -150,18 +151,23 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "author": {
+                    "description": "作者",
                     "type": "string"
                 },
                 "create_at": {
+                    "description": "创建时间",
                     "type": "string"
                 },
                 "id": {
+                    "description": "书籍ID",
                     "type": "integer"
                 },
                 "name": {
+                    "description": "书籍名称",
                     "type": "string"
                 },
                 "price": {
+                    "description": "价格",
                     "type": "number"
                 }
             }
