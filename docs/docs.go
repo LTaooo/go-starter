@@ -117,18 +117,24 @@ const docTemplate = `{
             ],
             "properties": {
                 "author": {
+                    "description": "作者",
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "张三"
                 },
                 "name": {
+                    "description": "书籍名称",
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "Go语言编程"
                 },
                 "price": {
+                    "description": "价格",
                     "type": "number",
-                    "minimum": 0.01
+                    "minimum": 0.01,
+                    "example": 100
                 }
             }
         },

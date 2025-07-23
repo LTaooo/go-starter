@@ -2,14 +2,20 @@ definitions:
   dto.BookCreateReq:
     properties:
       author:
+        description: 作者
+        example: 张三
         maxLength: 255
         minLength: 1
         type: string
       name:
+        description: 书籍名称
+        example: Go语言编程
         maxLength: 255
         minLength: 1
         type: string
       price:
+        description: 价格
+        example: 100
         minimum: 0.01
         type: number
     required:
