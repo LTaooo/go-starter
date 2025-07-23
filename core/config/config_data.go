@@ -25,14 +25,17 @@ func newMysqlConfig() *MysqlConfig {
 }
 
 type RedisConfig struct {
+	Enable   bool   `mapstructure:"enable"`
 	Host     string `mapstructure:"host"`
 	Port     int    `mapstructure:"port"`
 	Password string `mapstructure:"password"`
 	Database int    `mapstructure:"database"`
+	PoolSize int    `mapstructure:"pool_size"`
 }
 
 func newRedisConfig() *RedisConfig {
 	return &RedisConfig{
+		Enable:   false,
 		Host:     "localhost",
 		Port:     6379,
 		Password: "",

@@ -17,6 +17,7 @@ mysql:
 
 # Redis 配置
 redis:
+  enable: true
   host: "localhost"
   port: 6379
   password: ""

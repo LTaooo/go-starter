@@ -14,6 +14,7 @@ import (
 	"go-starter/core/logger"
 	"go-starter/core/middleware"
 	database "go-starter/core/mysql"
+	"go-starter/core/redis"
 
 	"go-starter/docs"
 
@@ -62,6 +63,14 @@ func initDatabase() {
 	logger.SugaredLogger.Info("数据库连接成功")
 }
 
+func initRedis() {
+	// 1. 初始化Redis连接
+	if err := redis.InitRedis(); err != nil {
+		logger.SugaredLogger.Error("Redis连接失败", "error", err)
+		panic(err)
+	}
+}
+
 func gracefulShutdown(server *http.Server) {
 	// 1. 创建信号通道
 	quit := make(chan os.Signal, 1)
@@ -79,7 +88,12 @@ func gracefulShutdown(server *http.Server) {
 		logger.SugaredLogger.Error("关闭数据库连接失败", "error", err)
 	}
 
-	// 4. 关闭服务器
+	// 4. 关闭Redis连接
+	if err := redis.CloseRedis(); err != nil {
+		logger.SugaredLogger.Error("关闭Redis连接失败", "error", err)
+	}
+
+	// 5. 关闭服务器
 	if err := server.Shutdown(ctx); err != nil {
 		logger.SugaredLogger.Error("服务器关闭失败", "error", err)
 	}
@@ -101,6 +115,7 @@ func main() {
 	initSwagger()
 	setGinMode()
 	initDatabase()
+	initRedis()
 	r := setupRouter()
 	server := &http.Server{
 		Addr:    config.GetConfig().GetListenAddr(),
