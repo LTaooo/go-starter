@@ -18,7 +18,7 @@ func NewBookService() *BookService {
 }
 
 // GetBookByID 通过ID查询书籍
-func (s *BookService) GetBookByID(id uint) (*model.Book, error) {
+func (s *BookService) GetBookByID(id uint) *model.Book {
 	return s.bookRepository.Find(id)
 }
 
@@ -30,8 +30,5 @@ func (s *BookService) CreateBook(req dto.BookCreateReq) (*model.Book, error) {
 	book.CreatedAt = datetime.FromNow().Timestamp()
 	book.UpdatedAt = datetime.FromNow().Timestamp()
 	err := s.bookRepository.Create(&book)
-	if err != nil {
-		return nil, err
-	}
-	return &book, nil
+	return &book, err
 }

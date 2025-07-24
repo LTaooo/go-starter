@@ -31,14 +31,14 @@ func Init(engine *gin.Engine) {
  */
 func initDefaultRoutes(engine *gin.Engine) {
 	engine.GET("/", func(c *gin.Context) {
-		response.NewResponse().Success(c, config.GetConfig().AppName)
+		response.Success(c, config.GetConfig().AppName)
 	})
 
 	engine.NoRoute(func(c *gin.Context) {
-		response.NewResponse().Error(c, enum.HttpNotFound, "Not Found")
+		response.Error(c, enum.HttpNotFound, "Not Found")
 	})
 
 	engine.NoMethod(func(c *gin.Context) {
-		response.NewResponse().Error(c, enum.BadRequest, "Method Not Allowed")
+		response.Error(c, enum.BadRequest, "Method Not Allowed")
 	})
 }

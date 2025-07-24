@@ -57,10 +57,10 @@ func setGinMode() {
 func initDatabase() {
 	// 1. 初始化数据库连接
 	if err := database.InitDatabase(); err != nil {
-		logger.SugaredLogger.Error("数据库连接失败", "error", err)
+		logger.SugaredLogger.Error("Mysql连接失败", "error", err)
 		panic(err)
 	}
-	logger.SugaredLogger.Info("数据库连接成功")
+	logger.SugaredLogger.Info("Mysql连接成功")
 }
 
 func initRedis() {

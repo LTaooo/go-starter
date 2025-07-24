@@ -17,6 +17,6 @@ func GinRecovery() gin.HandlerFunc {
 			" Panic: ", recovered,
 		)
 
-		response.NewResponse().Error(c, enum.InternalError, "系统异常")
+		response.Error(c, enum.InternalError, "系统异常")
 	})
 }

@@ -12,7 +12,7 @@ func ErrorHandler() gin.HandlerFunc {
 		c.Next()
 		if len(c.Errors) > 0 {
 			err := c.Errors.Last().Err
-			response.NewResponse().Error(c, enum.InternalError, err.Error())
+			response.Error(c, enum.InternalError, err.Error())
 		}
 	}
 }

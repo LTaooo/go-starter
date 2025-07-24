@@ -3,7 +3,7 @@ package controller
 import (
 	dto "go-starter/app/dto/book"
 	"go-starter/app/service"
-	"go-starter/core/enum"
+	"go-starter/core/http"
 	"go-starter/core/response"
 	"go-starter/core/utils/datetime"
 
@@ -11,12 +11,14 @@ import (
 )
 
 type BookController struct {
+	http.BaseController
 	bookService *service.BookService
 }
 
 func NewBookController() *BookController {
 	return &BookController{
-		bookService: service.NewBookService(),
+		BaseController: *http.NewBaseController(),
+		bookService:    service.NewBookService(),
 	}
 }
 
@@ -28,27 +30,25 @@ func NewBookController() *BookController {
 // @Param id query int true "书籍ID" minimum(1)
 // @Success 200 {object} response.Response{data=dto.BookGetRes}
 // @Router /api/book [get]
-func (b *BookController) GetBook(c *gin.Context) {
+func (t *BookController) GetBook(c *gin.Context) {
 	var req dto.BookGetReq
-	if err := c.ShouldBindQuery(&req); err != nil {
-		response.NewResponse().Error(c, enum.BadRequest, err.Error())
+	if t.IsError(c, http.FromQuery(c, &req)) {
 		return
 	}
 
-	book, err := b.bookService.GetBookByID(req.Id)
+	book := t.bookService.GetBookByID(req.Id)
 
-	if err != nil {
-		response.NewResponse().Success(c, nil)
+	if book != nil {
+		response.Success(c, dto.BookGetRes{
+			Id:       book.ID,
+			Name:     book.Name,
+			Author:   book.Author,
+			Price:    book.Price,
+			CreateAt: datetime.FromTimestamp(book.CreatedAt).Datetime(),
+		})
 		return
 	}
-
-	response.NewResponse().Success(c, dto.BookGetRes{
-		Id:       book.ID,
-		Name:     book.Name,
-		Author:   book.Author,
-		Price:    book.Price,
-		CreateAt: datetime.FromTimestamp(book.CreatedAt).Datetime(),
-	})
+	response.Success(c, nil)
 }
 
 // @Summary 创建书籍
@@ -59,20 +59,18 @@ func (b *BookController) GetBook(c *gin.Context) {
 // @Param book body dto.BookCreateReq true "书籍信息"
 // @Success 200 {object} response.Response{data=dto.BookCreateRes}
 // @Router /api/book/create [post]
-func (b *BookController) CreateBook(c *gin.Context) {
+func (t *BookController) CreateBook(c *gin.Context) {
 	var req dto.BookCreateReq
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.NewResponse().Error(c, enum.BadRequest, err.Error())
+	if t.IsError(c, http.FromJson(c, &req)) {
 		return
 	}
 
-	book, err := b.bookService.CreateBook(req)
-	if err != nil {
-		response.NewResponse().Error(c, enum.InternalError, err.Error())
+	book, err := t.bookService.CreateBook(req)
+	if t.IsError(c, err) {
 		return
 	}
 
-	response.NewResponse().Success(c, dto.BookCreateRes{
+	response.Success(c, dto.BookCreateRes{
 		Id: book.ID,
 	})
 }

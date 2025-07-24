@@ -12,12 +12,8 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
-func NewResponse() Response {
-	return Response{}
-}
-
-func (rs Response) Success(ctx *gin.Context, data interface{}) {
-	rs = Response{
+func Success(ctx *gin.Context, data interface{}) {
+	rs := Response{
 		Code:    enum.OK,
 		Message: enum.OK.Message(),
 		Data:    data,
@@ -25,8 +21,8 @@ func (rs Response) Success(ctx *gin.Context, data interface{}) {
 	ctx.JSON(200, rs)
 }
 
-func (rs Response) Error(ctx *gin.Context, code enum.Code, message string) {
-	rs = Response{
+func Error(ctx *gin.Context, code enum.Code, message string) {
+	rs := Response{
 		Code:    code,
 		Message: message,
 		Data:    nil,
