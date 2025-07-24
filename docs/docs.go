@@ -18,12 +18,6 @@ const docTemplate = `{
         "/api/book": {
             "get": {
                 "description": "根据ID获取书籍信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "book"
                 ],
@@ -63,12 +57,6 @@ const docTemplate = `{
         "/api/book/create": {
             "post": {
                 "description": "创建新的书籍",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "book"
                 ],
