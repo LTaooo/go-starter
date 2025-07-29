@@ -3,6 +3,7 @@ package controller
 import (
 	dto "go-starter/app/dto/book"
 	"go-starter/app/service"
+	"go-starter/core/enum"
 	"go-starter/core/http"
 	"go-starter/core/response"
 	"go-starter/core/utils/datetime"
@@ -46,7 +47,7 @@ func (t *BookController) GetBook(c *gin.Context) {
 		})
 		return
 	}
-	response.Success(c, nil)
+	response.Error(c, enum.BadRequest, "书籍不存在")
 }
 
 // @Summary 创建书籍
