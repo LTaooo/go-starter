@@ -16,10 +16,10 @@ type BookController struct {
 	bookService *service.BookService
 }
 
-func NewBookController() *BookController {
+func NewBookController(bookService *service.BookService) *BookController {
 	return &BookController{
 		BaseController: *http.NewBaseController(),
-		bookService:    service.NewBookService(),
+		bookService:    bookService,
 	}
 }
 

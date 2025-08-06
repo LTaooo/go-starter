@@ -19,9 +19,10 @@ import (
 	"go-starter/docs"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/fx"
 )
 
-func setupRouter() *gin.Engine {
+func setupRouter(routeHandler *route.RouteHandler) *gin.Engine {
 	// 1. 创建 gin 引擎，不使用默认中间件
 	engine := gin.New()
 
@@ -30,8 +31,8 @@ func setupRouter() *gin.Engine {
 	engine.Use(middleware.GinRecovery())
 	engine.Use(middleware.ErrorHandler())
 
-	// 3. 初始化路由
-	route.Init(engine)
+	// 3. 通过依赖注入的路由处理器初始化路由
+	routeHandler.Init(engine)
 
 	return engine
 }
@@ -109,27 +110,52 @@ func initSwagger() {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 }
 
-func Init() *gin.Engine {
+func Init(routeHandler *route.RouteHandler) *gin.Engine {
+	// 1. 初始化日志系统
 	initLogger()
+
+	// 2. 加载配置
 	config.LoadConfig()
+
+	// 3. 初始化 Swagger 文档
 	initSwagger()
+
+	// 4. 设置 Gin 模式
 	setGinMode()
+
+	// 5. 初始化数据库连接
 	initDatabase()
+
+	// 6. 初始化 Redis 连接
 	initRedis()
-	return setupRouter()
+
+	// 7. 通过依赖注入设置路由
+	return setupRouter(routeHandler)
 }
 
-func Start() {
-	r := Init()
+func NewHTTPServer(lc fx.Lifecycle, routeHandler *route.RouteHandler) *http.Server {
+	// 1. 通过依赖注入初始化应用
+	r := Init(routeHandler)
+
+	// 2. 创建 HTTP 服务器
 	server := &http.Server{
 		Addr:    config.GetConfig().GetListenAddr(),
 		Handler: r,
 	}
-	logger.SugaredLogger.Info("项目启动成功:", config.GetConfig().GetListenAddr(), "+", config.GetConfig().AppEnv)
-	go func() {
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.SugaredLogger.Error("服务器启动失败", "error", err)
-		}
-	}()
-	gracefulShutdown(server)
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			logger.SugaredLogger.Info("项目启动成功:", config.GetConfig().GetListenAddr(), "+", config.GetConfig().AppEnv)
+			go func() {
+				if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+					logger.SugaredLogger.Error("服务器启动失败", "error", err)
+				}
+			}()
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			gracefulShutdown(server)
+			return nil
+		},
+	})
+	return server
 }

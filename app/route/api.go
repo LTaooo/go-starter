@@ -11,19 +11,40 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// RouteHandler 路由处理器结构体
+type RouteHandler struct {
+	bookController *controller.BookController
+}
+
+// NewRouteHandler 创建路由处理器
+func NewRouteHandler(bookController *controller.BookController) *RouteHandler {
+	return &RouteHandler{
+		bookController: bookController,
+	}
+}
+
 /**
  * 初始化路由
  */
-func Init(engine *gin.Engine) {
+func (r *RouteHandler) Init(engine *gin.Engine) {
+	// 1. 初始化默认路由
 	initDefaultRoutes(engine)
-	// 添加swagger路由
+
+	// 2. 添加swagger路由
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// 3. 创建API路由组
 	api := engine.Group("/api")
 
-	// 书籍路由
-	bookController := controller.NewBookController()
-	api.GET("/book", bookController.GetBook)
-	api.POST("/book/create", bookController.CreateBook)
+	r.registerBookRoutes(api)
+}
+
+/**
+ * 注册书籍相关路由
+ */
+func (r *RouteHandler) registerBookRoutes(api *gin.RouterGroup) {
+	api.GET("/book", r.bookController.GetBook)
+	api.POST("/book/create", r.bookController.CreateBook)
 }
 
 /**

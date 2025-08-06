@@ -11,9 +11,9 @@ type BookService struct {
 	bookRepository *repository.BookRepository
 }
 
-func NewBookService() *BookService {
+func NewBookService(bookRepository *repository.BookRepository) *BookService {
 	return &BookService{
-		bookRepository: repository.NewBookRepository(),
+		bookRepository: bookRepository,
 	}
 }
 
