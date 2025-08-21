@@ -1,5 +1,7 @@
 package config
 
+import "go-starter/core/enum"
+
 type MysqlConfig struct {
 	Enable      bool   `mapstructure:"enable"`
 	Host        string `mapstructure:"host"`
@@ -54,6 +56,10 @@ type AppConfig struct {
 
 func (c *AppConfig) GetListenAddr() string {
 	return c.AppHost + ":" + c.AppPort
+}
+
+func (c *AppConfig) IsProdOrTest() bool {
+	return c.AppEnv == enum.PROD.String() || c.AppEnv == enum.TEST.String()
 }
 
 func NewAppConfig() *AppConfig {

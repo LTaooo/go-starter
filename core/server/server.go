@@ -111,11 +111,11 @@ func initSwagger() {
 }
 
 func Init(routeHandler *route.RouteHandler) *gin.Engine {
-	// 1. 初始化日志系统
-	initLogger()
-
-	// 2. 加载配置
+	// 1. 加载配置
 	config.LoadConfig()
+
+	// 2. 初始化日志系统
+	initLogger()
 
 	// 3. 初始化 Swagger 文档
 	initSwagger()
